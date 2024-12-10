@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .notification { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .notification h3 { margin: 0; }
+        .notification p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>App Hub</h1>
+    <div id="notifications"></div>
+
+    <script>
+        let lastNotificationId = 0;
+
+        async function fetchNotifications() {
+            try {
+                const response = await fetch('/get-notifications');
+                const notifications = await response.json();
+
+                // Filter for new notifications only
+                const newNotifications = notifications.filter(
+                    notification => notification.id > lastNotificationId
+                );
+
+                if (newNotifications.length > 0) {
+                    // Update lastNotificationId to the latest notification
+                    lastNotificationId = newNotifications[0].id;
+
+                    // Display new notifications
+                    newNotifications.forEach(notification => {
+                        displayNotification(notification.title, notification.message);
+                        showBrowserNotification(notification.title, notification.message);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        }
+
+        // Display notification on the page
+        function displayNotification(title, message) {
+            const notificationsDiv = document.getElementById('notifications');
+            const notificationElement = document.createElement('div');
+            notificationElement.className = 'notification';
+            notificationElement.innerHTML = `
+                <h3>${title}</h3>
+                <p>${message}</p>
+            `;
+            notificationsDiv.prepend(notificationElement);
+        }
+
+        // Show browser notification
+        function showBrowserNotification(title, message) {
+            if (Notification.permission === "granted") {
+                const options = {
+                    body: message,
+                    icon: '/images/notification-icon.png',
+                    requireInteraction: true,
+                };
+                new Notification(title, options);
+            }
+        }
+
+        // Request browser notification permission
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        // Poll for new notifications every 5 seconds
+        setInterval(fetchNotifications, 2000);
+
+        // Initial fetch
+        fetchNotifications();
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<script>
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        // Register the Service Worker
+        navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+
+            // Subscribe the user for push notifications
+            return registration.pushManager.subscribe({
+                userVisibleOnly: true,  // Only visible notifications are allowed
+                applicationServerKey: 'BBw6MQRDaW1QyA82jtQLbV3-TmrxlBdBKT8VEwkhSjJxdQx1Gx0PRg7bhZvVgJFQdwBbWKs4OmXOueZ75a731Ro' // Replace with your VAPID public key
+            });
+        }).then(function(subscription) {
+            console.log('User is subscribed:', subscription);
+
+            // Send the subscription object to the Symfony server for saving
+            fetch('/send-notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(subscription),
+            });
+        }).catch(function(error) {
+            console.error('Error subscribing user:', error);
+        });
+    } else {
+        console.warn('Push notifications are not supported in this browser');
+    }
+</script>

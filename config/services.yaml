@@ -20,5 +20,18 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Service\PushNotificationService:
+        arguments:
+            $gotifyUrl: '%env(GOTIFY_URL)%'
+            $gotifyToken: '%env(GOTIFY_TOKEN)%'
+
+    App\Service\WebPushService:
+        arguments:
+            $vapidPublicKey: '%env(VAPID_PUBLIC_KEY)%'
+            $vapidPrivateKey: '%env(VAPID_PRIVATE_KEY)%'
+
+
+    App\Service\FirebaseService:
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
