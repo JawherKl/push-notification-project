@@ -3,3 +3,34 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+send-notification :
+    path: /send-notification
+    controller: App\Controller\NotificationController::send
+    methods: [POST]
+
+subscribe :
+    path: /subscribe
+    controller: App\Controller\WebPushController::subscribe
+    methods: [POST]
+
+send-webpush:
+    path: /send-webpush
+    controller: App\Controller\WebPushController::sendNotification
+    methods: [POST]
+
+send-firebase-notification:
+    path: /send-firebase-notification
+    controller: App\Controller\WebPushController::sendFireBaseNotification
+    methods: [POST]
+    
+base:
+    path: /base
+    controller: App\Controller\WebPushController::base
+    methods: [POST]
+
+get-notifications:
+    path: /get-notifications
+    controller: App\Controller\NotificationController::getNotifications
+    methods: [GET]
+    

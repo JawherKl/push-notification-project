@@ -7,6 +7,8 @@
 /public/bundles/
 /var/
 /vendor/
+var/cache/*
+var/logs/*
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
@@ -23,3 +25,4 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+.env
